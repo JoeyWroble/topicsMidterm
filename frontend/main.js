@@ -7,11 +7,42 @@ document.getElementById('save-new-todo').addEventListener('click', (e) => {
   closeBtn.click();
 });
 
+const formatTime = (time) => {
+  const [hour, minute] = time.split(':');
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  const formattedHour = hour % 12 || 12;
+  return `${formattedHour}:${minute} ${ampm}`;
+};
+
+const calculateSleepDuration = (timeToSleep, timeAwake) => {
+  const [sleepHour, sleepMinute] = timeToSleep.split(':').map(Number);
+  const [awakeHour, awakeMinute] = timeAwake.split(':').map(Number);
+
+  let sleepDate = new Date();
+  sleepDate.setHours(sleepHour, sleepMinute, 0);
+
+  let awakeDate = new Date();
+  awakeDate.setHours(awakeHour, awakeMinute, 0);
+
+  if (awakeDate < sleepDate) {
+    awakeDate.setDate(awakeDate.getDate() + 1);
+  }
+
+  const duration = awakeDate - sleepDate;
+  const durationHours = Math.floor(duration / (1000 * 60 * 60));
+  const durationMinutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+
+  return `${durationHours} hours and ${durationMinutes} minutes`;
+};
+
 const postTodo = () => {
-  const titleInput = document.getElementById('new-title');
-  const title = titleInput.value;
-  const descInput = document.getElementById('new-description');
-  const desc = descInput.value;
+  const dateInput = document.getElementById('date');
+  const date = dateInput.value;
+  const timeToSleepInput = document.getElementById('timeToSleep');
+  const timeToSleep = timeToSleepInput.value;
+  const timeAwakeInput = document.getElementById('timeAwake');
+  const timeAwake = timeAwakeInput.value;
+
 
   const xhr = new XMLHttpRequest();
   xhr.onreadystatechange = () => {
@@ -22,7 +53,7 @@ const postTodo = () => {
 
   xhr.open('POST', api, true);
   xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-  xhr.send(JSON.stringify({ title, desc }));
+  xhr.send(JSON.stringify({ date, timeToSleep, timeAwake }));
 };
 
 const deleteTodo = (id) => {
@@ -43,10 +74,13 @@ const displayTodos = (todos) => {
   const tbody = document.getElementById('todo-rows');
   tbody.innerHTML = '';
   const rows = todos.map((x) => {
+    const sleepDuration = calculateSleepDuration(x.timeToSleep, x.timeAwake);
     return `<tr>
         <td>${x.id}</td>
-        <td>${x.title}</td>
-        <td>${x.desc}</td>
+        <td>${x.date}</td>
+        <td>${formatTime(x.timeToSleep)}</td>
+        <td>${formatTime(x.timeAwake)}</td>
+        <td>${sleepDuration}</td>
         <td>
         <button onClick="deleteTodo(${x.id})" type="button" class="btn btn-danger">Delete</button>
         </td>

@@ -19,7 +19,7 @@ async def get_todos() -> list[Todo]:
 async def add_todo(todo: TodoRequest) -> Todo:
     global max_id
     max_id += 1  # auto increment max_id
-    newTodo = Todo(id=max_id, title=todo.title, desc=todo.desc)
+    newTodo = Todo(id=max_id, date=todo.date, timeToSleep=todo.timeToSleep, timeAwake=todo.timeAwake)
     todo_list.append(newTodo)
     return newTodo
 
