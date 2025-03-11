@@ -43,17 +43,35 @@ const postTodo = () => {
   const timeAwakeInput = document.getElementById('timeAwake');
   const timeAwake = timeAwakeInput.value;
 
+  if (date && timeToSleep && timeAwake) {
+    const sleepDuration = calculateSleepDuration(timeToSleep, timeAwake);
 
-  const xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = () => {
-    if (xhr.readyState == 4 && xhr.status == 201) {
-      getTodos();
-    }
-  };
+    const card = document.createElement('div');
+    card.className = 'col-md-4';
+    card.innerHTML = `
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Date: ${date}</h5>
+                <p class="card-text">Went to Bed At: ${timeToSleep}</p>
+                <p class="card-text">Woke Up At: ${timeAwake}</p>
+                <p class="card-text">Slept For: ${sleepDuration}</p>
+            </div>
+        </div>
+    `;
 
-  xhr.open('POST', api, true);
-  xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-  xhr.send(JSON.stringify({ date, timeToSleep, timeAwake }));
+    document.getElementById('card-rows').appendChild(card);
+
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState == 4 && xhr.status == 201) {
+        getTodos();
+      }
+    };
+
+    xhr.open('POST', api, true);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.send(JSON.stringify({ date, timeToSleep, timeAwake }));
+  }
 };
 
 const deleteTodo = (id) => {
@@ -71,29 +89,32 @@ const deleteTodo = (id) => {
 };
 
 const displayTodos = (todos) => {
-  const tbody = document.getElementById('todo-rows');
-  tbody.innerHTML = '';
-  const rows = todos.map((x) => {
+  const cardRows = document.getElementById('card-rows');
+  cardRows.innerHTML = '';
+  todos.forEach((x) => {
     const sleepDuration = calculateSleepDuration(x.timeToSleep, x.timeAwake);
-    return `<tr>
-        <td>${x.id}</td>
-        <td>${x.date}</td>
-        <td>${formatTime(x.timeToSleep)}</td>
-        <td>${formatTime(x.timeAwake)}</td>
-        <td>${sleepDuration}</td>
-        <td>
-        <button onClick="deleteTodo(${x.id})" type="button" class="btn btn-danger">Delete</button>
-        </td>
-    </tr>`;
+    const card = document.createElement('div');
+    card.className = 'col-md-4';
+    card.innerHTML = `
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><strong>${x.date}</h5>
+                <p class="card-text">Went to Bed At: ${formatTime(x.timeToSleep)}</p>
+                <p class="card-text">Woke Up At: ${formatTime(x.timeAwake)}</p>
+                <p class="card-text">Slept For: ${sleepDuration}</p>
+                <button onClick="deleteTodo(${x.id})" type="button" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    `;
+    cardRows.appendChild(card);
   });
-  tbody.innerHTML = rows.join(' ');
 };
 
 const getTodos = () => {
   const xhr = new XMLHttpRequest();
   xhr.onreadystatechange = () => {
     if (xhr.readyState == 4 && xhr.status == 200) {
-      data = JSON.parse(xhr.responseText);
+      const data = JSON.parse(xhr.responseText);
       console.log(data);
       displayTodos(data);
     }

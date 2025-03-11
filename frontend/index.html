@@ -13,14 +13,14 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <h1 class = "px-3">Sleep Tracker</h1>
-    <p class = "px-3">
+    <h1 class="px-3" style="margin-top: 15px;">Sleep Tracker💤⏱</h1>
+    <p class="px-3">
       <strong>According to the National Institute of Health (NIH.gov):</strong>
-        <p class = "px-3">"Experts recommend that adults sleep between 7 and 9 hours a night.
+        <p class="px-3">"Experts recommend that adults sleep between 7 and 9 hours a night.
         Adults who sleep less than 7 hours a night may have more health issues than those who sleep 7 or more hours a night."
     </p>
     <!-- Button trigger modal -->
-     <div class="px-3">
+    <div class="px-3">
       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Add Sleep
       </button>
@@ -54,20 +54,12 @@
         </div>
       </div>
     </div>
-    <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Date</th>
-            <th scope="col">I Went To Bed At</th>
-            <th scope="col">I Woke Up At</th>
-            <th scope="col">I Slept For</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody id = "todo-rows">
-      </table>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-      <script src="main.js"></script>
+    <div class="container mt-3">
+      <div class="row" id="card-rows">
+
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="main.js"></script>
 </body>
 </html>
