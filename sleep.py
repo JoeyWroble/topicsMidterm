@@ -1,14 +1,12 @@
 from pydantic import BaseModel
 
-
-class Todo(BaseModel):
+class Sleep(BaseModel):
     id: int
     date: str
     timeToSleep: str
     timeAwake: str
 
-
-class TodoRequest(BaseModel):
+class SleepRequest(BaseModel):
     date: str
     timeToSleep: str
     timeAwake: str

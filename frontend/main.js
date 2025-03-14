@@ -1,8 +1,8 @@
-const api = 'http://127.0.0.1:8000/todos';
+const api = 'http://127.0.0.1:8000/sleeps';
 
-document.getElementById('save-new-todo').addEventListener('click', (e) => {
+document.getElementById('save-new-sleep').addEventListener('click', (e) => {
   e.preventDefault();
-  postTodo();
+  postSleep();
   const closeBtn = document.getElementById('add-close');
   closeBtn.click();
 });
@@ -35,7 +35,7 @@ const calculateSleepDuration = (timeToSleep, timeAwake) => {
   return `${durationHours} hours and ${durationMinutes} minutes`;
 };
 
-const postTodo = () => {
+const postSleep = () => {
   const dateInput = document.getElementById('date');
   const date = dateInput.value;
   const timeToSleepInput = document.getElementById('timeToSleep');
@@ -64,7 +64,7 @@ const postTodo = () => {
     const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = () => {
       if (xhr.readyState == 4 && xhr.status == 201) {
-        getTodos();
+        getSleeps();
       }
     };
 
@@ -74,13 +74,13 @@ const postTodo = () => {
   }
 };
 
-const deleteTodo = (id) => {
-  console.log(`deleting todo ID=${id}`);
+const deleteSleep = (id) => {
+  console.log(`deleting sleep ID=${id}`);
   const xhr = new XMLHttpRequest();
   xhr.onreadystatechange = () => {
     if (xhr.readyState == 4 && xhr.status == 200) {
-      getTodos();
-      console.log(`deleted todo ID=${id}`);
+      getSleeps();
+      console.log(`deleted sleep ID=${id}`);
     }
   };
 
@@ -88,10 +88,10 @@ const deleteTodo = (id) => {
   xhr.send();
 };
 
-const displayTodos = (todos) => {
+const displaySleeps = (sleeps) => {
   const cardRows = document.getElementById('card-rows');
   cardRows.innerHTML = '';
-  todos.forEach((x) => {
+  sleeps.forEach((x) => {
     const sleepDuration = calculateSleepDuration(x.timeToSleep, x.timeAwake);
     const card = document.createElement('div');
     card.className = 'col-md-4';
@@ -102,7 +102,7 @@ const displayTodos = (todos) => {
                 <p class="card-text">Went to Bed At: ${formatTime(x.timeToSleep)}</p>
                 <p class="card-text">Woke Up At: ${formatTime(x.timeAwake)}</p>
                 <p class="card-text">Slept For: ${sleepDuration}</p>
-                <button onClick="deleteTodo(${x.id})" type="button" class="btn btn-danger">Delete</button>
+                <button onClick="deleteSleep(${x.id})" type="button" class="btn btn-danger">Delete</button>
             </div>
         </div>
     `;
@@ -110,13 +110,13 @@ const displayTodos = (todos) => {
   });
 };
 
-const getTodos = () => {
+const getSleeps = () => {
   const xhr = new XMLHttpRequest();
   xhr.onreadystatechange = () => {
     if (xhr.readyState == 4 && xhr.status == 200) {
       const data = JSON.parse(xhr.responseText);
       console.log(data);
-      displayTodos(data);
+      displaySleeps(data);
     }
   };
 
@@ -125,5 +125,5 @@ const getTodos = () => {
 };
 
 (() => {
-  getTodos();
+  getSleeps();
 })();
