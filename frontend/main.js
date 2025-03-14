@@ -32,7 +32,7 @@ const calculateSleepDuration = (timeToSleep, timeAwake) => {
   const durationHours = Math.floor(duration / (1000 * 60 * 60));
   const durationMinutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
 
-  return `${durationHours} hours and ${durationMinutes} minutes`;
+  return { durationHours, durationMinutes };
 };
 
 const postSleep = () => {
@@ -44,10 +44,21 @@ const postSleep = () => {
   const timeAwake = timeAwakeInput.value;
 
   if (date && timeToSleep && timeAwake) {
-    const sleepDuration = calculateSleepDuration(timeToSleep, timeAwake);
+    const { durationHours, durationMinutes } = calculateSleepDuration(timeToSleep, timeAwake);
+    const sleepDuration = `${durationHours} hours and ${durationMinutes} minutes`;
+
+    let sleepRecommendation = '';
+    if (durationHours < 7) {
+      const remainingHours = 6 - durationHours;
+      const remainingMinutes = 60 - durationMinutes;
+      sleepRecommendation = `<p class="card-text text-danger">It is recommended you sleep ${remainingHours} hours and ${remainingMinutes} minutes more to reach 7 hours.</p>`;
+    } else {
+      sleepRecommendation = `<p class="card-text text-success">You have had sufficient sleep for today!</p>`;
+    }
 
     const card = document.createElement('div');
     card.className = 'col-md-4';
+    card.id = `card-${date}`;
     card.innerHTML = `
         <div class="card mb-3">
             <div class="card-body">
@@ -55,6 +66,8 @@ const postSleep = () => {
                 <p class="card-text">Went to Bed At: ${timeToSleep}</p>
                 <p class="card-text">Woke Up At: ${timeAwake}</p>
                 <p class="card-text">Slept For: ${sleepDuration}</p>
+                ${sleepRecommendation}
+                <button onClick="deleteSleep('${date}')" type="button" class="btn btn-danger">Delete</button>
             </div>
         </div>
     `;
@@ -75,12 +88,10 @@ const postSleep = () => {
 };
 
 const deleteSleep = (id) => {
-  console.log(`deleting sleep ID=${id}`);
   const xhr = new XMLHttpRequest();
   xhr.onreadystatechange = () => {
     if (xhr.readyState == 4 && xhr.status == 200) {
       getSleeps();
-      console.log(`deleted sleep ID=${id}`);
     }
   };
 
@@ -92,9 +103,21 @@ const displaySleeps = (sleeps) => {
   const cardRows = document.getElementById('card-rows');
   cardRows.innerHTML = '';
   sleeps.forEach((x) => {
-    const sleepDuration = calculateSleepDuration(x.timeToSleep, x.timeAwake);
+    const { durationHours, durationMinutes } = calculateSleepDuration(x.timeToSleep, x.timeAwake);
+    const sleepDuration = `${durationHours} hours and ${durationMinutes} minutes`;
+
+    let sleepRecommendation = '';
+    if (durationHours < 7) {
+      const remainingHours = 6 - durationHours;
+      const remainingMinutes = 60 - durationMinutes;
+      sleepRecommendation = `<p class="card-text text-danger">It is recommended you sleep ${remainingHours} hours and ${remainingMinutes} minutes more to reach 7 hours.</p>`;
+    } else {
+      sleepRecommendation = `<p class="card-text text-success">You have had sufficient sleep for today!</p>`;
+    }
+
     const card = document.createElement('div');
     card.className = 'col-md-4';
+    card.id = `card-${x.date}`;
     card.innerHTML = `
         <div class="card mb-3">
             <div class="card-body">
@@ -102,6 +125,7 @@ const displaySleeps = (sleeps) => {
                 <p class="card-text">Went to Bed At: ${formatTime(x.timeToSleep)}</p>
                 <p class="card-text">Woke Up At: ${formatTime(x.timeAwake)}</p>
                 <p class="card-text">Slept For: ${sleepDuration}</p>
+                ${sleepRecommendation}
                 <button onClick="deleteSleep(${x.id})" type="button" class="btn btn-danger">Delete</button>
             </div>
         </div>
